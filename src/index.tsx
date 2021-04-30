@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { App } from '@kyuu/App';
-import { store } from '@kyuu/state/app/store';
+import { App } from 'App';
+import { store } from 'state/app/store';
 import { Provider } from 'react-redux';
 
 ReactDOM.render(

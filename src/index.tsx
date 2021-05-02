@@ -13,7 +13,8 @@ ReactDOM.render(
       <ThemeProvider theme={theme}>
         <Global
           styles={css`
-            html {
+            html,
+            body {
               height: 100%;
             }
             ${normalize}

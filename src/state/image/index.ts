@@ -1,12 +1,16 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction, createSelector } from '@reduxjs/toolkit';
+import { RootState } from 'state/app/store';
 
 interface ImageState {
-  [key: string]: File;
+  [key: string]: {
+    original: string;
+    crop?: string;
+  };
 }
 
 interface Image {
   key: string;
-  image: File;
+  image: string;
 }
 
 const initialState: ImageState = {};
@@ -16,14 +20,25 @@ export const imageSlice = createSlice({
   initialState,
   reducers: {
     setImage: (state, action: PayloadAction<Image>) => {
-      state[action.payload.key] = action.payload.image;
+      state[action.payload.key] = {
+        original: action.payload.image,
+      };
     },
     removeImage: (state, action: PayloadAction<Image>) => {
       delete state[action.payload.key];
     },
+    setCrop: (state, action: PayloadAction<Image>) => {
+      state[action.payload.key].crop = action.payload.image;
+    },
   },
 });
 
-export const { setImage, removeImage } = imageSlice.actions;
+const imageSelector = (state: RootState) => state.image;
+
+export const imageKeySelector = createSelector(imageSelector, images =>
+  Object.keys(images)
+);
+
+export const { setImage, removeImage, setCrop } = imageSlice.actions;
 
 export default imageSlice.reducer;

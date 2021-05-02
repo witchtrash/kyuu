@@ -100,10 +100,40 @@ const rgba = (color: Color, alpha?: number): string => {
   return `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${alpha ?? 1})`;
 };
 
+const pastel = (): string => {
+  const hue = Math.floor(Math.random() * 360);
+  return `hsl(${hue}, 90%, 90%)`;
+};
+
+const hue = (color: Color, amount: number): string => {
+  const hsl = palette[color].hsl;
+  const h = Math.max(0, Math.min(hsl[0] + amount, 360));
+
+  return `hsl(${h}, ${hsl[1]}%, ${hsl[2]}%)`;
+};
+
+const saturation = (color: Color, amount: number): string => {
+  const hsl = palette[color].hsl;
+  const s = Math.max(0, Math.min(hsl[1] + amount, 100));
+
+  return `hsl(${hsl[0]}, ${s}%, ${hsl[2]}%)`;
+};
+
+const luminescence = (color: Color, amount: number): string => {
+  const hsl = palette[color].hsl;
+  const l = Math.max(0, Math.min(hsl[2] + amount, 100));
+
+  return `hsl(${hsl[0]}, ${hsl[1]}%, ${l}%)`;
+};
+
 export const theme = {
   palette,
   fn: {
     rgba,
+    pastel,
+    hue,
+    saturation,
+    luminescence,
   },
 };
 

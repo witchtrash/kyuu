@@ -1,12 +1,13 @@
 import React from 'react';
-import { Background } from 'components/Layout';
+import { useAppDispatch, useAppSelector } from 'state/app/hooks';
 import { Grid, GridItem } from 'components/Grid';
+import { Background } from 'components/Layout';
 import { Button } from 'components/Button';
-import { toBlob } from 'html-to-image';
+import { toJpeg } from 'html-to-image';
 import { saveAs } from 'file-saver';
-import { theme } from 'util/theme';
 import styled from '@emotion/styled';
 import '@fontsource/poppins/600.css';
+import { imageKeySelector, setImage } from 'state/image';
 
 const AppBackground = styled(Background)`
   display: flex;
@@ -14,6 +15,8 @@ const AppBackground = styled(Background)`
 
 export const App = () => {
   const gridRef = React.useRef<HTMLDivElement>(null);
+  const dispatch = useAppDispatch();
+  const images = useAppSelector(state => imageKeySelector(state));
 
   const items = new Array(9)
     .fill(0)
@@ -23,8 +26,8 @@ export const App = () => {
     if (!gridRef.current) {
       return;
     }
-    toBlob(gridRef.current, {
-      backgroundColor: theme.fn.pastel(),
+    toJpeg(gridRef.current, {
+      backgroundColor: '#ffe6e6',
       style: {
         margin: '0',
       },
@@ -35,9 +38,37 @@ export const App = () => {
     });
   };
 
+  const handlePaste = (e: React.ClipboardEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const data = e.clipboardData;
+
+    if (data.files.length) {
+      const file = data.files[0];
+
+      if (file.type.substring(0, 5) === 'image') {
+        if (images.length != 9) {
+          for (let i = 0; i < 9; i++) {
+            const testKey = `image-${i}`;
+            if (!images.includes(testKey)) {
+              dispatch(
+                setImage({
+                  image: URL.createObjectURL(file),
+                  key: `image-${i}`,
+                })
+              );
+              break;
+            }
+          }
+        }
+      }
+    }
+  };
+
   return (
     <React.Fragment>
-      <AppBackground>
+      <AppBackground onPaste={handlePaste}>
         <Grid ref={gridRef} rows={3} columns={3}>
           {items}
         </Grid>

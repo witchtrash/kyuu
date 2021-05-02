@@ -36,7 +36,7 @@ export const imageSlice = createSlice({
 const imageSelector = (state: RootState) => state.image;
 
 export const imageKeySelector = createSelector(imageSelector, images =>
-  Object.keys(images)
+  Object.keys(images).sort()
 );
 
 export const { setImage, removeImage, setCrop } = imageSlice.actions;
